@@ -2,10 +2,8 @@
   "name": "deepseek-balance",
   "version": "1.0.0",
   "description": "DeepSeek API 余额查询工具（支持本地 & Vercel 部署）",
-  "main": "server.js",
   "scripts": {
-    "prestart": "node scripts/generate-cert.js",
-    "start": "node server.js",
+    "local": "node server.js",
     "security-test": "node scripts/security-test.js"
   },
   "dependencies": {
