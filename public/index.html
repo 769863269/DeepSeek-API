@@ -52,7 +52,6 @@
             overflow-x: hidden;
         }
 
-        /* Animated background particles */
         body::before,
         body::after {
             content: '';
@@ -99,7 +98,6 @@
             z-index: 1;
         }
 
-        /* ===== Glass Card ===== */
         .card {
             background: var(--bg-card);
             backdrop-filter: blur(24px) saturate(1.4);
@@ -128,20 +126,19 @@
             min-height: 540px;
         }
 
-        /* ===== Sidebar ===== */
-        .sidebar {
+        /* ===== Left: Query Panel ===== */
+        .query-panel {
             width: 36%;
             padding: 36px 28px;
             background: rgba(0, 0, 0, 0.2);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             border-right: 1px solid var(--border-glass);
             position: relative;
             overflow: hidden;
         }
 
-        .sidebar::before {
+        .query-panel::before {
             content: '';
             position: absolute;
             top: 0;
@@ -151,51 +148,14 @@
             background: var(--accent-gradient);
         }
 
-        .brand {
-            position: relative;
-        }
-
-        .brand-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: var(--accent-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 16px rgba(108, 92, 231, 0.4);
-        }
-
-        .brand-icon svg {
-            width: 26px;
-            height: 26px;
-            color: white;
-        }
-
-        .brand h1 {
-            font-size: 26px;
+        .query-panel-title {
+            font-size: 20px;
             font-weight: 700;
-            letter-spacing: -0.03em;
-            line-height: 1.2;
-            margin-bottom: 6px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
         }
 
-        .brand p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        /* ===== API Key Input ===== */
-        .api-key-section {
-            margin-bottom: 16px;
-        }
-
+        /* ===== Credentials ===== */
         .section-label {
             font-size: 11px;
             font-weight: 600;
@@ -203,10 +163,6 @@
             text-transform: uppercase;
             letter-spacing: 0.08em;
             margin-bottom: 12px;
-        }
-
-        .input-group {
-            margin-bottom: 0;
         }
 
         .input-wrapper {
@@ -217,6 +173,7 @@
             border: 1px solid var(--border-glass);
             border-radius: var(--radius-sm);
             transition: all 0.25s ease;
+            margin-bottom: 24px;
         }
 
         .input-wrapper:focus-within {
@@ -268,7 +225,7 @@
 
         /* ===== Summary ===== */
         .summary {
-            margin-top: 32px;
+            flex: 1;
         }
 
         .summary-items {
@@ -315,52 +272,10 @@
             font-size: 14px;
         }
 
-        .sidebar-footer {
-            margin-top: auto;
-            padding-top: 24px;
-        }
-
-        .sidebar-footer a {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--accent-2);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .sidebar-footer a:hover {
-            color: #c8bfff;
-            gap: 10px;
-        }
-
-        /* ===== Main Panel ===== */
-        .main {
-            width: 64%;
-            padding: 36px 32px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .main-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .main-title {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-
         /* ===== Query Button ===== */
         .btn-query {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             border: none;
             border-radius: var(--radius-sm);
             background: var(--accent-gradient);
@@ -373,7 +288,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 16px;
+            margin-top: 20px;
             position: relative;
             overflow: hidden;
         }
@@ -415,7 +330,7 @@
             }
         }
 
-        /* ===== Auto Refresh Toggle ===== */
+        /* ===== Auto Refresh ===== */
         .options {
             display: flex;
             align-items: center;
@@ -424,7 +339,7 @@
             background: rgba(255, 255, 255, 0.03);
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-glass);
-            margin-bottom: 20px;
+            margin-top: 10px;
         }
 
         .options-label {
@@ -473,18 +388,22 @@
             transform: translateX(16px);
         }
 
+        .bottom-actions {
+            margin-top: auto;
+        }
+
         /* ===== Error Message ===== */
         .error-msg {
-            padding: 12px 16px;
+            padding: 10px 14px;
             background: rgba(255, 107, 107, 0.1);
             border: 1px solid rgba(255, 107, 107, 0.2);
             border-radius: var(--radius-sm);
             color: var(--error);
-            font-size: 13px;
+            font-size: 12px;
             display: none;
             align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .error-msg.show {
@@ -493,81 +412,67 @@
         }
 
         .error-msg svg {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             flex-shrink: 0;
             margin-top: 0;
         }
 
-        /* ===== Result ===== */
-        .result {
+        .panel-footer {
             margin-top: auto;
-            padding-top: 24px;
-            border-top: 1px solid var(--border-glass);
+            padding-top: 16px;
+        }
+
+        .panel-footer a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--accent-2);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .panel-footer a:hover {
+            color: #c8bfff;
+            gap: 10px;
+        }
+
+        .panel-footer a svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        /* ===== Right: Balance Result ===== */
+        .balance-panel {
+            width: 64%;
+            padding: 36px 32px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .balance-panel .result {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             animation: fadeSlideIn 0.4s ease;
-        }
-
-        /* Empty / placeholder state */
-        .result.empty .balance-value,
-        .result.empty .balance-item-value {
-            color: var(--text-muted);
-            -webkit-text-fill-color: var(--text-muted);
-            background: none;
-        }
-
-        .result.empty .balance-currency {
-            color: var(--text-muted);
-        }
-
-        .result.empty .status-badge {
-            color: var(--text-muted);
-            background: rgba(255, 255, 255, 0.04);
-            border-color: var(--border-glass);
-        }
-
-        .result.empty .status-dot {
-            background: var(--text-muted);
-            animation: none;
-        }
-
-        .result.empty .balance-main {
-            border-color: var(--border-glass);
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .result.empty .balance-item {
-            opacity: 0.5;
-        }
-
-        .result.empty .balance-item:hover {
-            transform: none;
-            background: rgba(255, 255, 255, 0.04);
-            border-color: var(--border-glass);
-        }
-
-        @keyframes fadeSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .balance-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .balance-title {
             font-size: 13px;
             color: var(--text-secondary);
             font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
 
         .status-badge {
@@ -612,16 +517,16 @@
         .balance-main {
             display: flex;
             align-items: baseline;
-            gap: 8px;
-            margin-bottom: 20px;
-            padding: 20px;
+            gap: 12px;
+            margin-bottom: 28px;
+            padding: 28px 24px;
             background: rgba(108, 92, 231, 0.08);
             border-radius: var(--radius-sm);
             border: 1px solid rgba(108, 92, 231, 0.15);
         }
 
         .balance-value {
-            font-size: 42px;
+            font-size: 52px;
             font-weight: 700;
             letter-spacing: -0.04em;
             background: var(--accent-gradient);
@@ -632,7 +537,7 @@
         }
 
         .balance-currency {
-            font-size: 16px;
+            font-size: 18px;
             color: var(--text-secondary);
             font-weight: 500;
         }
@@ -640,15 +545,15 @@
         .balance-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 12px;
+            margin-bottom: 24px;
         }
 
         .balance-item {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-glass);
             border-radius: var(--radius-sm);
-            padding: 16px;
+            padding: 20px;
             transition: all 0.25s ease;
         }
 
@@ -661,7 +566,7 @@
         .balance-item-label {
             font-size: 12px;
             color: var(--text-secondary);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -688,7 +593,7 @@
         }
 
         .balance-item-value {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             letter-spacing: -0.02em;
         }
@@ -756,10 +661,60 @@
 
         .server-status {
             text-align: center;
-            padding: 10px 0 0;
+            padding: 12px 0 0;
             font-size: 11px;
             color: var(--text-muted);
             letter-spacing: 0.02em;
+        }
+
+        /* ===== Empty State ===== */
+        .result.empty .balance-value,
+        .result.empty .balance-item-value {
+            color: var(--text-muted);
+            -webkit-text-fill-color: var(--text-muted);
+            background: none;
+        }
+
+        .result.empty .balance-currency {
+            color: var(--text-muted);
+        }
+
+        .result.empty .status-badge {
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--border-glass);
+        }
+
+        .result.empty .status-dot {
+            background: var(--text-muted);
+            animation: none;
+        }
+
+        .result.empty .balance-main {
+            border-color: var(--border-glass);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .result.empty .balance-item {
+            opacity: 0.5;
+        }
+
+        .result.empty .balance-item:hover {
+            transform: none;
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--border-glass);
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ===== Responsive ===== */
@@ -773,39 +728,29 @@
                 min-height: auto;
             }
 
-            .sidebar {
+            .query-panel {
                 width: 100%;
                 padding: 28px 24px;
                 border-right: none;
                 border-bottom: 1px solid var(--border-glass);
             }
 
-            .sidebar::before {
+            .query-panel::before {
                 height: 3px;
                 width: 100%;
             }
 
-            .main {
+            .balance-panel {
                 width: 100%;
                 padding: 28px 24px;
             }
 
             .balance-value {
-                font-size: 34px;
+                font-size: 38px;
             }
 
-            .brand-icon {
-                width: 40px;
-                height: 40px;
-            }
-
-            .brand-icon svg {
-                width: 22px;
-                height: 22px;
-            }
-
-            .brand h1 {
-                font-size: 22px;
+            .balance-main {
+                padding: 20px;
             }
         }
 
@@ -814,8 +759,8 @@
                 padding: 12px;
             }
 
-            .sidebar,
-            .main {
+            .query-panel,
+            .balance-panel {
                 padding: 20px 16px;
             }
 
@@ -828,7 +773,7 @@
             }
 
             .balance-value {
-                font-size: 28px;
+                font-size: 30px;
             }
         }
     </style>
@@ -838,123 +783,96 @@
     <div class="container">
         <div class="card">
             <div class="layout">
-                <!-- Sidebar -->
-                <div class="sidebar">
+                <!-- Left: Query Panel -->
+                <div class="query-panel">
                     <div>
-                        <div class="brand">
-                            <div class="brand-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <polyline points="12 6 12 12 16 14" />
+                        <div class="query-panel-title">查询余额</div>
+
+                        <div class="section-label">管理凭证</div>
+                        <div class="input-wrapper">
+                            <input type="password" id="apiKey" placeholder="输入 API Key (sk-...)" autocomplete="off"
+                                spellcheck="false" />
+                            <button class="toggle-btn" id="toggleKey" title="显示/隐藏" type="button"
+                                aria-label="切换 API Key 可见性">
+                                <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                                    aria-hidden="true">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                    <circle cx="12" cy="12" r="3" />
                                 </svg>
-                            </div>
-                            <h1>DeepSeek<br>余额查询</h1>
-                            <p>实时查看 API 账户余额与可用状态</p>
+                            </button>
                         </div>
 
                         <div class="summary" id="summary">
                             <div class="section-label">概览</div>
                             <div class="summary-items">
                                 <div class="summary-item">
-                                    <span class="summary-key">
-                                        <span class="summary-dot"></span>
-                                        状态
-                                    </span>
+                                    <span class="summary-key"><span class="summary-dot"></span>状态</span>
                                     <span class="summary-value" id="summaryStatus">未查询</span>
                                 </div>
                                 <div class="summary-item">
-                                    <span class="summary-key">
-                                        <span class="summary-dot"></span>
-                                        总余额
-                                    </span>
+                                    <span class="summary-key"><span class="summary-dot"></span>总余额</span>
                                     <span class="summary-value" id="summaryBalance">—</span>
                                 </div>
                                 <div class="summary-item">
-                                    <span class="summary-key">
-                                        <span class="summary-dot"></span>
-                                        货币
-                                    </span>
+                                    <span class="summary-key"><span class="summary-dot"></span>货币</span>
                                     <span class="summary-value" id="summaryCurrency">—</span>
                                 </div>
                                 <div class="summary-item">
-                                    <span class="summary-key">
-                                        <span class="summary-dot"></span>
-                                        更新时间
-                                    </span>
+                                    <span class="summary-key"><span class="summary-dot"></span>更新时间</span>
                                     <span class="summary-value" id="summaryTime">—</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="sidebar-footer">
+                    <div class="bottom-actions">
+                        <div class="error-msg" id="errorMsg" role="alert">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                            <span id="errorText"></span>
+                        </div>
+
+                        <button class="btn-query" id="queryBtn" type="button">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            查询余额
+                        </button>
+
+                        <div class="options">
+                            <span class="options-label">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="23 4 23 10 17 10" />
+                                    <polyline points="1 20 1 14 7 14" />
+                                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                                </svg>
+                                自动刷新（每 5 分钟）
+                            </span>
+                            <div class="switch" id="autoRefresh" role="switch" tabindex="0" aria-checked="false"></div>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer">
                         <a href="https://platform.deepseek.com/api_keys" target="_blank">
                             获取 API Key
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M7 17l9.2-9.2M17 17V7H7" />
                             </svg>
                         </a>
                     </div>
                 </div>
 
-                <!-- Main Panel -->
-                <div class="main">
-                    <div class="main-header">
-                        <div class="main-title">查询余额</div>
-                    </div>
-
-                    <div class="api-key-section">
-                        <div class="input-group">
-                            <div class="input-wrapper">
-                                <input type="password" id="apiKey" placeholder="输入 API Key (sk-...)" autocomplete="off"
-                                    spellcheck="false" />
-                                <button class="toggle-btn" id="toggleKey" title="显示/隐藏" type="button"
-                                    aria-label="切换 API Key 可见性">
-                                    <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
-                                        aria-hidden="true">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                        <circle cx="12" cy="12" r="3" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button class="btn-query" id="queryBtn" type="button">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                        </svg>
-                        查询余额
-                    </button>
-
-                    <div class="options">
-                        <span class="options-label">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="23 4 23 10 17 10" />
-                                <polyline points="1 20 1 14 7 14" />
-                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-                            </svg>
-                            自动刷新（每 5 分钟）
-                        </span>
-                        <div class="switch" id="autoRefresh" role="switch" tabindex="0" aria-checked="false"></div>
-                    </div>
-
-                    <div class="error-msg" id="errorMsg" role="alert">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <circle cx="12" cy="12" r="10" />
-                            <line x1="12" y1="8" x2="12" y2="12" />
-                            <line x1="12" y1="16" x2="12.01" y2="16" />
-                        </svg>
-                        <span id="errorText"></span>
-                    </div>
-
+                <!-- Right: Balance Result -->
+                <div class="balance-panel">
                     <div class="result empty" id="result">
                         <div class="balance-header">
                             <span class="balance-title">账户总余额</span>
@@ -1014,25 +932,12 @@
     </div>
 
     <script>
-        // ============================================================
-        // 安全工具函数（Web Crypto API）
-        // ============================================================
-
         function hex(buf) {
             return Array.from(new Uint8Array(buf))
                 .map(b => b.toString(16).padStart(2, '0'))
                 .join('');
         }
 
-        function hexToBuf(hexStr) {
-            const bytes = new Uint8Array(hexStr.length / 2);
-            for (let i = 0; i < hexStr.length; i += 2) {
-                bytes[i / 2] = parseInt(hexStr.substr(i, 2), 16);
-            }
-            return bytes;
-        }
-
-        // 获取安全配置
         let _secConfig = null;
         async function getSecurityConfig() {
             if (_secConfig) return _secConfig;
@@ -1042,7 +947,6 @@
             return _secConfig;
         }
 
-        // 使用 PBKDF2 派生 AES-GCM 密钥
         async function deriveAESKey(secret, salt) {
             const enc = new TextEncoder();
             const keyMaterial = await crypto.subtle.importKey(
@@ -1057,7 +961,6 @@
             }, keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt']);
         }
 
-        // AES-256-GCM 加密 API Key
         async function encryptApiKey(apiKey, secret, salt) {
             const aesKey = await deriveAESKey(secret, salt);
             const enc = new TextEncoder();
@@ -1069,7 +972,6 @@
             return { encryptedData: hex(ciphertext), iv: hex(iv), tag: hex(tag) };
         }
 
-        // HMAC-SHA256 签名
         async function createSignature(secret, parts) {
             const key = await crypto.subtle.importKey(
                 'raw', new TextEncoder().encode(secret),
@@ -1078,10 +980,6 @@
             const sig = await crypto.subtle.sign('HMAC', key, data);
             return hex(new Uint8Array(sig));
         }
-
-        // ============================================================
-        // 主逻辑
-        // ============================================================
 
         let autoRefreshTimer = null;
         let securityConfigPromise = null;
@@ -1103,7 +1001,6 @@
             });
         });
 
-        // 显示/隐藏 API Key
         document.getElementById('toggleKey').addEventListener('click', () => {
             const input = document.getElementById('apiKey');
             const icon = document.getElementById('eyeIcon');
@@ -1146,8 +1043,7 @@
                 btn.disabled = loading;
                 refreshBtn.disabled = loading;
                 if (loading) {
-                    btn.innerHTML =
-                        '<span class="spinner"></span> 查询中...';
+                    btn.innerHTML = '<span class="spinner"></span> 查询中...';
                 } else {
                     btn.innerHTML =
                         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 查询余额';
