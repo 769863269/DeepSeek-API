@@ -57,8 +57,8 @@
             content: '';
             position: fixed;
             border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.3;
+            filter: blur(50px);
+            opacity: 0.25;
             pointer-events: none;
             z-index: 0;
         }
@@ -79,6 +79,11 @@
             bottom: -100px;
             left: -80px;
             animation: float 25s ease-in-out infinite alternate-reverse;
+        }
+
+        body::before,
+        body::after {
+            will-change: transform;
         }
 
         @keyframes float {
@@ -1125,7 +1130,7 @@
                                     <circle cx="12" cy="12" r="10" />
                                     <polyline points="12 6 12 12 16 14" />
                                 </svg>
-                                未查询
+                                <span id="lastUpdateText">未查询</span>
                             </span>
                             <button class="btn-refresh" id="refreshBtn" type="button">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -1161,37 +1166,46 @@
             return _secConfig;
         }
 
+        // 缓存派生密钥，避免每次查询重复 10 万次 PBKDF2 迭代
+        const _keyCache = new Map();
+
+        function cacheKeyId(secret, salt) { return `${secret.slice(0, 16)}:${salt.slice(0, 8)}`; }
+
         async function deriveAESKey(secret, salt) {
+            const cacheKey = cacheKeyId(secret, salt);
+            const cached = _keyCache.get(cacheKey);
+            if (cached?.aesKey) return cached.aesKey;
+
             const enc = new TextEncoder();
             const keyMaterial = await crypto.subtle.importKey(
                 'raw', enc.encode(secret),
                 'PBKDF2', false, ['deriveKey']
             );
-            return crypto.subtle.deriveKey({
+            const aesKey = await crypto.subtle.deriveKey({
                 name: 'PBKDF2',
                 salt: enc.encode(salt),
                 iterations: 100000,
                 hash: 'SHA-512'
             }, keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt']);
-        }
 
-        async function encryptApiKey(apiKey, secret, salt) {
-            const aesKey = await deriveAESKey(secret, salt);
-            const enc = new TextEncoder();
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, enc.encode(apiKey));
-            const raw = new Uint8Array(encrypted);
-            const tag = raw.slice(-16);
-            const ciphertext = raw.slice(0, -16);
-            return { encryptedData: hex(ciphertext), iv: hex(iv), tag: hex(tag) };
+            _keyCache.set(cacheKey, { aesKey });
+            return aesKey;
         }
 
         async function createSignature(secret, parts) {
-            const key = await crypto.subtle.importKey(
-                'raw', new TextEncoder().encode(secret),
-                { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+            const cacheKey = cacheKeyId(secret, '');
+            let hmacKey = _keyCache.get(cacheKey)?.hmacKey;
+            if (!hmacKey) {
+                hmacKey = await crypto.subtle.importKey(
+                    'raw', new TextEncoder().encode(secret),
+                    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+                );
+                const existing = _keyCache.get(cacheKey) || {};
+                existing.hmacKey = hmacKey;
+                _keyCache.set(cacheKey, existing);
+            }
             const data = new TextEncoder().encode(parts.sort().join('|'));
-            const sig = await crypto.subtle.sign('HMAC', key, data);
+            const sig = await crypto.subtle.sign('HMAC', hmacKey, data);
             return hex(new Uint8Array(sig));
         }
 
@@ -1374,11 +1388,16 @@
                     // --- Multi-currency ---
                     const currList = document.getElementById('currencyList');
                     const currRows = document.getElementById('currencyRows');
+                    function sanitize(str) {
+                        const el = document.createElement('div');
+                        el.textContent = str;
+                        return el.innerHTML;
+                    }
                     if (data.balance_infos.length > 1) {
                         currRows.innerHTML = data.balance_infos.map(c => `
                             <div class="currency-row">
-                                <span class="curr-code">${c.currency || '—'}</span>
-                                <span class="curr-amount">${formatNumber(c.total_balance)}</span>
+                                <span class="curr-code">${sanitize(c.currency || '—')}</span>
+                                <span class="curr-amount">${sanitize(formatNumber(c.total_balance))}</span>
                             </div>
                         `).join('');
                         currList.classList.add('show');
@@ -1390,8 +1409,7 @@
                     const pad = (n) => n.toString().padStart(2, '0');
                     const timeStr =
                         `${pad(now.getFullYear())}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-                    document.getElementById('lastUpdate').innerHTML =
-                        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${timeStr}`;
+                    document.getElementById('lastUpdateText').textContent = timeStr;
 
                     result.classList.remove('empty');
 
