@@ -1192,6 +1192,17 @@
             return aesKey;
         }
 
+        async function encryptApiKey(apiKey, secret, salt) {
+            const aesKey = await deriveAESKey(secret, salt);
+            const enc = new TextEncoder();
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, enc.encode(apiKey));
+            const raw = new Uint8Array(encrypted);
+            const tag = raw.slice(-16);
+            const ciphertext = raw.slice(0, -16);
+            return { encryptedData: hex(ciphertext), iv: hex(iv), tag: hex(tag) };
+        }
+
         async function createSignature(secret, parts) {
             const cacheKey = cacheKeyId(secret, '');
             let hmacKey = _keyCache.get(cacheKey)?.hmacKey;
