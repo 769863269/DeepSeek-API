@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "DeepSeek API 余额查询工具（支持本地 & Vercel 部署）",
   "scripts": {
-    "local": "node server.js",
-    "security-test": "node scripts/security-test.js"
+    "local": "node local/server.js",
+    "generate-cert": "node local/scripts/generate-cert.js",
+    "security-test": "node local/scripts/security-test.js"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
