@@ -6,25 +6,30 @@
 const crypto = require('crypto');
 
 module.exports = (req, res) => {
-    const signingSecret = process.env.SIGNING_SECRET || crypto.randomBytes(32).toString('hex');
-    const encryptionSalt = process.env.ENCRYPTION_SALT || crypto.randomBytes(16).toString('hex');
-    const timestampMaxAge = parseInt(process.env.TIMESTAMP_MAX_AGE || '300', 10);
+    try {
+        // 允许跨域（Vercel 中同域名部署不需要，但防止 preview 域名不一致）
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Timestamp, X-Nonce, X-Signature');
 
-    // 安全响应头
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+        if (req.method === 'OPTIONS') {
+            return res.status(204).end();
+        }
 
-    // 如果使用随机生成的密钥（未配置环境变量），记录警告
-    if (!process.env.SIGNING_SECRET) {
-        console.warn('[config] SIGNING_SECRET 未配置，使用随机值（冷启动后会变化，请在 Vercel 环境变量中设置）');
+        const signingSecret = process.env.SIGNING_SECRET || crypto.randomBytes(32).toString('hex');
+        const encryptionSalt = process.env.ENCRYPTION_SALT || crypto.randomBytes(16).toString('hex');
+        const timestampMaxAge = parseInt(process.env.TIMESTAMP_MAX_AGE || '300', 10);
+
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+
+        res.status(200).json({
+            signingSecret,
+            encryptionSalt,
+            timestampMaxAge,
+        });
+    } catch (err) {
+        console.error('[config] 错误:', err);
+        res.status(500).json({ error: '服务器内部错误: ' + err.message });
     }
-    if (!process.env.ENCRYPTION_SALT) {
-        console.warn('[config] ENCRYPTION_SALT 未配置，使用随机值（冷启动后会变化，请在 Vercel 环境变量中设置）');
-    }
-
-    res.status(200).json({
-        signingSecret,
-        encryptionSalt,
-        timestampMaxAge,
-    });
 };
