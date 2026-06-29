@@ -193,7 +193,7 @@
 
         /* ===== API Key Input ===== */
         .api-key-section {
-            margin-top: 28px;
+            margin-bottom: 16px;
         }
 
         .section-label {
@@ -348,7 +348,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 28px;
+            margin-bottom: 20px;
         }
 
         .main-title {
@@ -853,25 +853,6 @@
                             <p>实时查看 API 账户余额与可用状态</p>
                         </div>
 
-                        <div class="api-key-section">
-                            <div class="section-label">凭证管理</div>
-                            <div class="input-group">
-                                <div class="input-wrapper">
-                                    <input type="password" id="apiKey" placeholder="输入 API Key (sk-...)"
-                                        autocomplete="off" spellcheck="false" />
-                                    <button class="toggle-btn" id="toggleKey" title="显示/隐藏" type="button"
-                                        aria-label="切换 API Key 可见性">
-                                        <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
-                                            aria-hidden="true">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                            <circle cx="12" cy="12" r="3" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="summary" id="summary">
                             <div class="section-label">概览</div>
                             <div class="summary-items">
@@ -922,6 +903,24 @@
                 <div class="main">
                     <div class="main-header">
                         <div class="main-title">查询余额</div>
+                    </div>
+
+                    <div class="api-key-section">
+                        <div class="input-group">
+                            <div class="input-wrapper">
+                                <input type="password" id="apiKey" placeholder="输入 API Key (sk-...)" autocomplete="off"
+                                    spellcheck="false" />
+                                <button class="toggle-btn" id="toggleKey" title="显示/隐藏" type="button"
+                                    aria-label="切换 API Key 可见性">
+                                    <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                                        aria-hidden="true">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <button class="btn-query" id="queryBtn" type="button">
