@@ -1,0 +1,5 @@
+# Vercel 部署 — 忽略本地开发文件
+ssl/
+scripts/
+.env
+*.local

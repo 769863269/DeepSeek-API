@@ -1,0 +1,22 @@
+# 依赖
+node_modules/
+
+# 本地开发环境
+.env
+.env.local
+
+# SSL 证书（本地生成，不提交）
+ssl/
+
+# 本地脚本（开发/测试用）
+scripts/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统
+.DS_Store
+Thumbs.db

@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek 余额查询</title>
+    <style>
+        :root {
+            --bg: #fbfbfd;
+            --card: #ffffff;
+            --text: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --text-muted: #86868b;
+            --border: #d2d2d7;
+            --border-light: #e8e8ed;
+            --accent: #0071e3;
+            --accent-hover: #0077ed;
+            --success: #34c759;
+            --error: #ff3b30;
+            --warning: #ff9500;
+            --radius: 18px;
+            --radius-sm: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: -0.01em;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 980px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 30px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 520px;
+        }
+
+        .sidebar {
+            width: 38%;
+            padding: 40px 32px;
+            background: #f5f5f7;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid var(--border-light);
+        }
+
+        .main {
+            width: 62%;
+            padding: 40px 32px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .brand p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .api-key-section {
+            margin-top: 32px;
+        }
+
+        .summary {
+            margin-top: 48px;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 14px;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 14px;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item .summary-key {
+            color: var(--text-secondary);
+        }
+
+        .summary-item .summary-value {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 40px;
+        }
+
+        .sidebar-footer a {
+            font-size: 13px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .sidebar-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #f5f5f7;
+            border-radius: var(--radius-sm);
+            transition: background 0.2s ease;
+        }
+
+        .input-wrapper:focus-within {
+            background: #ececef;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 44px 14px 16px;
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-family: -apple-system, "SF Mono", "Consolas", monospace;
+            color: var(--text);
+            outline: none;
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--text-muted);
+            font-family: -apple-system, sans-serif;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 4px;
+            display: flex;
+            transition: color 0.2s;
+        }
+
+        .toggle-btn:hover {
+            color: var(--text-secondary);
+        }
+
+        .toggle-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn-query {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 980px;
+            background: var(--accent);
+            color: white;
+            font-size: 15px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: background 0.2s ease, opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .btn-query:hover:not(:disabled) {
+            background: var(--accent-hover);
+        }
+
+        .btn-query:active:not(:disabled) {
+            opacity: 0.85;
+        }
+
+        .btn-query:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .options {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .switch {
+            position: relative;
+            width: 36px;
+            height: 22px;
+            background: #c7c7cc;
+            border-radius: 11px;
+            cursor: pointer;
+            transition: background 0.25s ease;
+            flex-shrink: 0;
+            outline: none;
+        }
+
+        .switch:focus-visible {
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3);
+        }
+
+        .switch[aria-checked="true"] {
+            background: var(--success);
+        }
+
+        .switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.25s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+        }
+
+        .switch[aria-checked="true"]::after {
+            transform: translateX(14px);
+        }
+
+        .error-msg {
+            padding: 12px 16px;
+            background: #fff5f5;
+            border-radius: var(--radius-sm);
+            color: var(--error);
+            font-size: 13px;
+            display: none;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .error-msg.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .error-msg svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .result {
+            display: none;
+            margin-top: auto;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.35s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .balance-main {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .balance-value {
+            font-size: 40px;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+        }
+
+        .balance-currency {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .balance-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .balance-title {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--success);
+        }
+
+        .status-badge.unavailable {
+            color: var(--error);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .balance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .balance-item {
+            background: #f5f5f7;
+            border-radius: var(--radius-sm);
+            padding: 14px;
+        }
+
+        .balance-item-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .balance-item-value {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .footer-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .btn-refresh {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-refresh:hover {
+            opacity: 0.65;
+        }
+
+        .btn-refresh svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .btn-refresh:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .server-status {
+            text-align: center;
+            padding: 6px 0 0;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 24px 16px;
+            }
+
+            .layout {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 28px 24px;
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+            }
+
+            .main {
+                width: 100%;
+                padding: 28px 24px;
+            }
+
+            .summary {
+                margin-top: 24px;
+            }
+
+            .sidebar-footer {
+                padding-top: 24px;
+            }
+
+            .balance-value {
+                font-size: 34px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="layout">
+                <div class="sidebar">
+                    <div>
+                        <div class="brand">
+                            <h1>DeepSeek<br>余额查询</h1>
+                            <p>实时查看 API 账户余额与可用状态。</p>
+                        </div>
+
+                        <div class="api-key-section">
+                            <div class="summary-label">凭证管理</div>
+                            <div class="input-group">
+                                <label for="apiKey">API Key</label>
+                                <div class="input-wrapper">
+                                    <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off"
+                                        spellcheck="false" />
+                                    <button class="toggle-btn" id="toggleKey" title="显示/隐藏" type="button"
+                                        aria-label="切换 API Key 可见性">
+                                        <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                                            aria-hidden="true">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                            <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="summary" id="summary">
+                            <div class="summary-label">概览</div>
+                            <div class="summary-item">
+                                <span class="summary-key">状态</span>
+                                <span class="summary-value" id="summaryStatus">未查询</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-key">总余额</span>
+                                <span class="summary-value" id="summaryBalance">—</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-key">货币</span>
+                                <span class="summary-value" id="summaryCurrency">—</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-key">更新时间</span>
+                                <span class="summary-value" id="summaryTime">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-footer">
+                        <a href="https://platform.deepseek.com/api_keys" target="_blank">获取 API Key →</a>
+                    </div>
+                </div>
+
+                <div class="main">
+                    <div class="section-title">查询余额</div>
+
+                    <button class="btn-query" id="queryBtn" type="button">查询余额</button>
+
+                    <div class="options">
+                        <span>自动刷新</span>
+                        <div class="switch" id="autoRefresh" role="switch" tabindex="0" aria-checked="false"></div>
+                    </div>
+
+                    <div class="error-msg" id="errorMsg" role="alert">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        <span id="errorText"></span>
+                    </div>
+
+                    <div class="result" id="result">
+                        <div class="balance-header">
+                            <span class="balance-title">账户总余额</span>
+                            <div class="status-badge" id="statusBadge">
+                                <span class="status-dot" aria-hidden="true"></span>
+                                <span id="statusText">可用</span>
+                            </div>
+                        </div>
+
+                        <div class="balance-main">
+                            <span class="balance-value" id="totalBalance">0.00</span>
+                            <span class="balance-currency" id="currency">CNY</span>
+                        </div>
+
+                        <div class="balance-grid">
+                            <div class="balance-item">
+                                <div class="balance-item-label">赠送余额</div>
+                                <div class="balance-item-value" id="grantedBalance">0.00</div>
+                            </div>
+                            <div class="balance-item">
+                                <div class="balance-item-label">充值余额</div>
+                                <div class="balance-item-value" id="toppedUpBalance">0.00</div>
+                            </div>
+                        </div>
+
+                        <div class="footer-info">
+                            <span id="lastUpdate">—</span>
+                            <button class="btn-refresh" id="refreshBtn" type="button">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="23 4 23 10 17 10" />
+                                    <polyline points="1 20 1 14 7 14" />
+                                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                                </svg>
+                                刷新
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="server-status">API Key 经 AES-256-GCM 加密传输，HTTPS 由 Vercel 自动保障</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // 安全工具函数（Web Crypto API）
+        // ============================================================
+
+        function hex(buf) {
+            return Array.from(new Uint8Array(buf))
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+        }
+
+        function hexToBuf(hexStr) {
+            const bytes = new Uint8Array(hexStr.length / 2);
+            for (let i = 0; i < hexStr.length; i += 2) {
+                bytes[i / 2] = parseInt(hexStr.substr(i, 2), 16);
+            }
+            return bytes;
+        }
+
+        // 获取安全配置
+        let _secConfig = null;
+        async function getSecurityConfig() {
+            if (_secConfig) return _secConfig;
+            const resp = await fetch('/api/config');
+            if (!resp.ok) throw new Error('无法获取安全配置');
+            _secConfig = await resp.json();
+            return _secConfig;
+        }
+
+        // 使用 PBKDF2 派生 AES-GCM 密钥
+        async function deriveAESKey(secret, salt) {
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw', enc.encode(secret),
+                'PBKDF2', false, ['deriveKey']
+            );
+            return crypto.subtle.deriveKey(
+                {
+                    name: 'PBKDF2',
+                    salt: enc.encode(salt),
+                    iterations: 100000,
+                    hash: 'SHA-512'
+                },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['encrypt']
+            );
+        }
+
+        // AES-256-GCM 加密 API Key
+        async function encryptApiKey(apiKey, secret, salt) {
+            const aesKey = await deriveAESKey(secret, salt);
+            const enc = new TextEncoder();
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encrypted = await crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv },
+                aesKey,
+                enc.encode(apiKey)
+            );
+            // encrypted = ciphertext + authTag (最后16字节)
+            const raw = new Uint8Array(encrypted);
+            const tag = raw.slice(-16);
+            const ciphertext = raw.slice(0, -16);
+            return {
+                encryptedData: hex(ciphertext),
+                iv: hex(iv),
+                tag: hex(tag)
+            };
+        }
+
+        // HMAC-SHA256 签名
+        async function createSignature(secret, parts) {
+            const key = await crypto.subtle.importKey(
+                'raw', new TextEncoder().encode(secret),
+                { name: 'HMAC', hash: 'SHA-256' },
+                false, ['sign']
+            );
+            const data = new TextEncoder().encode(parts.sort().join('|'));
+            const sig = await crypto.subtle.sign('HMAC', key, data);
+            return hex(new Uint8Array(sig));
+        }
+
+        // ============================================================
+        // 主逻辑
+        // ============================================================
+
+        let autoRefreshTimer = null;
+        // 缓存安全配置（页面生命周期内有效）
+        let securityConfigPromise = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 预先加载安全配置
+            securityConfigPromise = getSecurityConfig().catch(() => {
+                console.warn('安全配置加载失败，将在首次查询时重试');
+            });
+
+            // 从 sessionStorage 恢复自动刷新状态
+            const savedAutoRefresh = sessionStorage.getItem('ds_auto_refresh');
+            if (savedAutoRefresh === 'true') {
+                const sw = document.getElementById('autoRefresh');
+                sw.setAttribute('aria-checked', 'true');
+                startAutoRefresh();
+            }
+
+            document.getElementById('apiKey').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') queryBalance();
+            });
+        });
+
+        // 显示/隐藏 API Key
+        document.getElementById('toggleKey').addEventListener('click', () => {
+            const input = document.getElementById('apiKey');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+            }
+        });
+
+        // 查询按钮
+        document.getElementById('queryBtn').addEventListener('click', queryBalance);
+        // 刷新按钮
+        document.getElementById('refreshBtn').addEventListener('click', queryBalance);
+
+        // 自动刷新开关
+        const switchEl = document.getElementById('autoRefresh');
+        switchEl.addEventListener('click', toggleAutoRefresh);
+        switchEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleAutoRefresh();
+            }
+        });
+
+        async function queryBalance() {
+            const apiKeyInput = document.getElementById('apiKey').value.trim();
+            const btn = document.getElementById('queryBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const errorMsg = document.getElementById('errorMsg');
+            const result = document.getElementById('result');
+
+            if (!apiKeyInput) {
+                showError('请输入 API Key');
+                return;
+            }
+
+            const setLoading = (loading) => {
+                btn.disabled = loading;
+                refreshBtn.disabled = loading;
+                if (loading) {
+                    btn.innerHTML = '<span class="spinner"></span> 查询中...';
+                } else {
+                    btn.innerHTML = '查询余额';
+                }
+            };
+
+            setLoading(true);
+            errorMsg.classList.remove('show');
+            result.classList.remove('show');
+
+            try {
+                // --- 1. 获取安全配置 ---
+                const config = await getSecurityConfig();
+                const { signingSecret, encryptionSalt } = config;
+
+                // --- 2. 生成 nonce 和 timestamp ---
+                const nonce = crypto.randomUUID();
+                const timestamp = Date.now();
+
+                // --- 3. 加密 API Key（AES-256-GCM）---
+                const encryptedPayload = await encryptApiKey(apiKeyInput, signingSecret, encryptionSalt);
+
+                // --- 4. 生成 HMAC 签名 ---
+                const bodyStr = JSON.stringify(encryptedPayload);
+                const sigParts = {
+                    timestamp: String(timestamp),
+                    nonce,
+                    body: bodyStr,
+                    path: '/api/balance',
+                    method: 'POST',
+                };
+                const signature = await createSignature(signingSecret, Object.values(sigParts));
+
+                // --- 5. 发送请求 ---
+                const response = await fetch('/api/balance', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Timestamp': String(timestamp),
+                        'X-Nonce': nonce,
+                        'X-Signature': signature,
+                    },
+                    body: bodyStr,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || `请求失败 (${response.status})`);
+                    setLoading(false);
+                    return;
+                }
+
+                if (data && data.balance_infos && data.balance_infos.length > 0) {
+                    const info = data.balance_infos[0];
+                    const total = formatBalance(info.total_balance);
+                    const currency = info.currency || 'CNY';
+
+                    document.getElementById('totalBalance').textContent = total;
+                    document.getElementById('grantedBalance').textContent = formatBalance(info.granted_balance);
+                    document.getElementById('toppedUpBalance').textContent = formatBalance(info.topped_up_balance);
+                    document.getElementById('currency').textContent = currency;
+
+                    const badge = document.getElementById('statusBadge');
+                    const statusText = document.getElementById('statusText');
+                    if (data.is_available) {
+                        badge.className = 'status-badge';
+                        statusText.textContent = '可用';
+                    } else {
+                        badge.className = 'status-badge unavailable';
+                        statusText.textContent = '不可用';
+                    }
+
+                    const now = new Date();
+                    const pad = (n) => n.toString().padStart(2, '0');
+                    const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+                    document.getElementById('lastUpdate').textContent = `更新于 ${timeStr}`;
+
+                    result.classList.add('show');
+
+                    // 更新侧边栏概览
+                    document.getElementById('summaryStatus').textContent = data.is_available ? '可用' : '不可用';
+                    document.getElementById('summaryStatus').style.color = data.is_available
+                        ? 'var(--success)'
+                        : 'var(--error)';
+                    document.getElementById('summaryBalance').textContent = total;
+                    document.getElementById('summaryCurrency').textContent = currency;
+                    document.getElementById('summaryTime').textContent = timeStr;
+                } else {
+                    showError('未获取到余额信息');
+                }
+            } catch (err) {
+                showError('请求失败: ' + err.message);
+            }
+
+            setLoading(false);
+        }
+
+        function formatBalance(value) {
+            const num = parseFloat(value) || 0;
+            return num.toFixed(2);
+        }
+
+        function showError(msg) {
+            document.getElementById('errorText').textContent = msg;
+            document.getElementById('errorMsg').classList.add('show');
+            document.getElementById('result').classList.remove('show');
+        }
+
+        function toggleAutoRefresh() {
+            const sw = document.getElementById('autoRefresh');
+            const checked = sw.getAttribute('aria-checked') === 'true';
+            const newChecked = !checked;
+            sw.setAttribute('aria-checked', newChecked.toString());
+
+            sessionStorage.setItem('ds_auto_refresh', newChecked);
+
+            if (newChecked) {
+                startAutoRefresh();
+            } else {
+                stopAutoRefresh();
+            }
+        }
+
+        function startAutoRefresh() {
+            stopAutoRefresh();
+            autoRefreshTimer = setInterval(() => {
+                const apiKey = document.getElementById('apiKey').value.trim();
+                if (apiKey) {
+                    queryBalance();
+                }
+            }, 5 * 60 * 1000);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshTimer) {
+                clearInterval(autoRefreshTimer);
+                autoRefreshTimer = null;
+            }
+        }
+    </script>
+</body>
+
+</html>
